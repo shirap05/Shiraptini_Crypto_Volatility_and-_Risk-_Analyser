@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crypto Volatility & Risk Analyzer</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url("C:\Users\Shiraptinic\Pictures\crypto.jpeg") no-repeat center center/cover;
+        height: 100vh;
+        color: white;
+    }
+
+    .overlay {
+        background: rgba(0,0,0,0.6);
+        height: 100vh;
+        width: 100%;
+        padding-top: 90px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 50px;
+        color: #4dc9ff;
+        margin-bottom: -5px;
+    }
+
+    p.subtitle {
+        font-size: 22px;
+        color: #d1e8ff;
+        margin-bottom: 30px;
+    }
+
+    .feature-section {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        margin-top: 40px;
+    }
+
+    .card {
+        background: rgba(0,0,0,0.45);
+        padding: 25px;
+        width: 230px;
+        border-radius: 15px;
+        text-align: center;
+        border: 1px solid #4dc9ff;
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        background: rgba(0,0,0,0.6);
+    }
+    
+    .card img {
+        width: 50px;
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 40px;
+        background: #4dc9ff;
+        padding: 12px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #001220;
+        font-weight: bold;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: white;
+        color: black;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <h1>Crypto Volatility & Risk Analyzer</h1>
+    <p class="subtitle">Analyzing Cryptocurrency Risk Through Automated Data Acquisition</p>
+
+    <div class="feature-section">
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/4843/4843922.png">
+            <h3>Automated Data Fetching</h3>
+            <p>Retrieve live and historical price data from Binance & CoinGecko APIs.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/993/993707.png">
+            <h3>Risk Metrics</h3>
+            <p>Volatility, Sharpe Ratio, Beta, and VaR calculations.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png">
+            <h3>Visual Dashboards</h3>
+            <p>Interactive charts and risk comparison visualizations.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/2989/2989988.png">
+            <h3>Data Storage</h3>
+            <p>Automatic CSV/Parquet saving for long-term analysis.</p>
+        </div>
+    </div>
+
+    <!-- 🔥 IMPORTANT CHANGE: Link to Flask route /milestone1 -->
+    <a class="btn" href="/milestone1">Go to Milestone 1 →</a>
+
+</div>
+
+</body>
+</html>

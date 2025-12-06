@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Milestone 1 • Data Acquisition & API Live Feed</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg,#040b2c,#071a47,#001d3d);
+            color:white;
+            padding:30px;
+        }
+
+        .layout{
+            max-width:1400px;
+            margin:auto;
+            display:grid;
+            grid-template-columns:1fr 1.5fr;
+            gap:30px;
+        }
+
+        .glass{
+            background:rgba(255,255,255,0.07);
+            padding:25px;
+            border-radius:18px;
+            border:1px solid rgba(255,255,255,0.1);
+            backdrop-filter:blur(8px);
+            box-shadow:0px 0px 20px rgba(0,255,255,0.05);
+            transition:0.3s;
+        }
+
+        h1{color:#35d3ff;margin-top:0}
+        h2{color:#30b1ff}
+
+        ul{padding-left:10px}
+        li{margin:12px 0}
+
+        .btn{
+            background:#35d3ff;
+            border:none;
+            padding:10px 16px;
+            border-radius:10px;
+            cursor:pointer;
+            color:#001020;
+            font-weight:700;
+            transition:0.2s;
+        }
+        .btn:hover{
+            background:#51e1ff;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+            font-size:16px;
+        }
+
+        thead{
+            background:rgba(255,255,255,0.08);
+        }
+
+        th{
+            padding:12px;
+            text-align:left;
+            color:#3fe0ff;
+            border-bottom:1px solid rgba(255,255,255,0.15);
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+
+        .status{
+            font-size:14px;
+            color:#00ffa6;
+            margin-top:8px;
+        }
+
+        .loader{
+            display:inline-block;
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            background:#35d3ff;
+            animation:pulse 0.8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0%{opacity:0.4;transform:scale(0.8)}
+            100%{opacity:1;transform:scale(1)}
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- LEFT CARD -->
+    <div class="glass">
+        <h1>Milestone 1: Data Acquisition Module</h1>
+
+        <h2>✔ Requirements</h2>
+        <ul>
+            <li>Python environment setup (Flask, pandas, requests)</li>
+            <li>API integration with CoinGecko</li>
+            <li>Live + historical data extraction</li>
+            <li>CSV storage with timestamps</li>
+            <li>Missing value handling</li>
+        </ul>
+
+        <h2>📌 Expected Outputs</h2>
+        <ul>
+            <li>Updated live crypto market feed</li>
+            <li>Verified API connectivity</li>
+            <li>Auto-saved CSV file per refresh</li>
+        </ul>
+    </div>
+
+
+    <!-- RIGHT CARD -->
+    <div class="glass">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>📡 Live Crypto Market Feed</h2>
+            <button class="btn" onclick="loadCrypto()">Refresh</button>
+        </div>
+
+        <p id="status" class="status"><span class="loader"></span> Fetching latest data…</p>
+        <p id="updatedTime" style="opacity:0.8"></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Crypto</th>
+                    <th>Price ($)</th>
+                    <th>24h %</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody id="cryptoTable"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+function loadCrypto(){
+
+    document.getElementById("status").innerHTML = `<span class='loader'></span> Fetching latest data…`;
+
+    fetch("/api/crypto")
+    .then(res => res.json())
+    .then(data => {
+        let html = "";
+        data.forEach(c => {
+            let changeColor = c.change_24h >= 0 ? "lime" : "#ff4d4d";
+
+            html += `
+                <tr>
+                    <td>${c.name} (${c.symbol})</td>
+                    <td>$${c.price}</td>
+                    <td style="color:${changeColor}">${c.change_24h.toFixed(2)}%</td>
+                    <td>${c.volume}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("cryptoTable").innerHTML = html;
+        document.getElementById("status").innerHTML = "✔ Updated successfully";
+        document.getElementById("updatedTime").innerHTML = "Last Updated: " + new Date().toLocaleString();
+    })
+    .catch(() => {
+        document.getElementById("status").innerHTML = "❌ Error fetching data. Check API.";
+    });
+}
+
+loadCrypto();
+setInterval(loadCrypto, 10000);
+</script>
+
+</body>
+</html>
