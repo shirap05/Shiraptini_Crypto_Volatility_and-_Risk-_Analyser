@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Milestone 2 - Data Processing</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root{--bg:#061226;--accent:#4dc9ff;--muted:#9fdcff;--card:#0b2133;--text:#e9f8ff}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial;padding:28px}
+  .container{display:flex;gap:24px;max-width:1200px;margin:0 auto}
+  .left{width:42%}
+  .right{flex:1}
+  h1{color:var(--accent);font-size:28px;margin:0 0 12px}
+  .card{background:rgba(255,255,255,0.02);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .req-title{color:var(--accent);margin-bottom:10px}
+  ul{list-style:none;padding:0;margin:0}
+  ul li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02)}
+  .dash-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .seg button{background:#0d314f;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#001220;border:none}
+  .refresh-btn{background:var(--accent);color:#001220;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .coin-row{display:flex;align-items:center;gap:10px}
+  .logo img{width:26px;height:26px;display:block}
+  .chart-wrap{margin-top:18px;width:100%;height:300px}
+  #volChart{width:100% !important;height:300px !important}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="left">
+    <h1>Milestone 2: Data Processing</h1>
+    <div class="card">
+      <div class="req-title">Requirements</div>
+      <ul>
+        <li>Daily log-return calculation</li>
+        <li>Statistical measures: volatility, Sharpe ratio, Beta</li>
+        <li>Moving average & rolling volatility</li>
+      </ul>
+
+      <div style="height:14px"></div>
+
+      <div class="req-title">Outputs</div>
+      <ul>
+        <li>Metrics table with risk indicators</li>
+        <li>Processed dataset for visualization & classification</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <div class="dash-head">
+        <div><strong>Risk Metrics Dashboard</strong> <span style="color:var(--muted);font-size:13px;margin-left:8px">Live Analysis</span></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="seg">
+            <button id="btn30" class="active" onclick="setDays(30)">30D</button>
+            <button id="btn90" onclick="setDays(90)">90D</button>
+            <button id="btn365" onclick="setDays(365)">1Y</button>
+          </div>
+          <button class="refresh-btn" onclick="loadMetrics()">Refresh</button>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Crypto</th><th>Volatility</th><th>Sharpe</th><th>Beta</th><th>VaR</th></tr></thead>
+        <tbody id="metricsTable"></tbody>
+      </table>
+
+      <div class="chart-wrap">
+        <canvas id="volChart"></canvas>
+      </div>
+
+      <div style="margin-top:8px;color:var(--muted)">Last updated: <span id="m2Update">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LOGOS = {
+  bitcoin: "https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/btc.svg",
+  ethereum: "https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/eth.svg",
+  solana: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=022",
+  cardano: "https://cryptologos.cc/logos/cardano-ada-logo.svg?v=022",
+  dogecoin: "https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=022"
+};
+
+let days = 30;
+let volChart;
+
+function setDays(d){
+  days = d;
+  document.getElementById('btn30').classList.remove('active');
+  document.getElementById('btn90').classList.remove('active');
+  document.getElementById('btn365').classList.remove('active');
+  if(d===30) document.getElementById('btn30').classList.add('active');
+  if(d===90) document.getElementById('btn90').classList.add('active');
+  if(d===365) document.getElementById('btn365').classList.add('active');
+  loadMetrics();
+}
+
+async function loadMetrics(){
+  try{
+    const res = await fetch(`/api/metrics?days=${days}`);
+    const data = await res.json();
+    if(!Array.isArray(data)) throw new Error('API error');
+    renderTable(data);
+    renderChart(data);
+    document.getElementById('m2Update').textContent = new Date().toLocaleTimeString();
+  }catch(err){
+    console.error(err);
+    document.getElementById('metricsTable').innerHTML = `<tr><td colspan="5" style="color:#ff8b92">API Error</td></tr>`;
+  }
+}
+
+function renderTable(data){
+  const tbody = document.getElementById('metricsTable');
+  tbody.innerHTML = '';
+  data.forEach(item=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="coin-row">
+          <div class="logo"><img src="${LOGOS[item.coin]}"></div>
+          <div><strong>${item.coin.toUpperCase()}</strong></div>
+        </div>
+      </td>
+      <td>${item.volatility}%</td>
+      <td>${item.sharpe}</td>
+      <td>${item.beta}</td>
+      <td>${item.var}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderChart(data){
+  const labels = data.map(x => x.coin.toUpperCase());
+  const vols = data.map(x => x.volatility);
+  const ctx = document.getElementById('volChart').getContext('2d');
+  if(volChart) volChart.destroy();
+  volChart = new Chart(ctx, {
+    type:'bar',
+    data:{labels, datasets:[{label:'Volatility (%)', data:vols, backgroundColor:'#4dc9ff'}]},
+    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true}}}
+  });
+}
+
+loadMetrics();
+</script>
+</body>
+</html>
 
