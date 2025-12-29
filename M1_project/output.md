@@ -2,7 +2,8 @@ First page
 ![WhatsApp Image 2025-12-28 at 13 15 38](https://github.com/user-attachments/assets/3e98d911-c2cc-43d9-8de9-56cbfd551973)
 
 milestone1
-<img width="1893" height="904" alt="image" src="https://github.com/user-attachments/assets/e94be030-3ece-4d97-9d66-5feb08946299" />
+<img width="1600" height="729" alt="image" src="https://github.com/user-attachments/assets/f071b320-9710-47dd-9c1e-eaa905d262f6" />
+
 
 milestone2 for 30days
 ![WhatsApp Image 2025-12-28 at 12 58 08](https://github.com/user-attachments/assets/ce64b5ff-8f23-486f-a1ef-5f0cad51e226)
