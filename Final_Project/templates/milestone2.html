@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Milestone 2 : Data Processing</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Add your CSS styles here */
+    body{
+        margin:0;
+        font-family:Arial, Helvetica, sans-serif;
+        background:linear-gradient(135deg,#040b2c,#071a47,#001d3d);
+        color:white;
+        padding:25px;
+    }
+    .layout{
+      max-width:1400px;
+      margin:auto;
+      display:grid;
+      grid-template-columns:1fr 2fr;
+      gap:30px;
+      align-items:start;
+    }
+    .card{
+    background:rgba(255,255,255,0.07);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 20px rgba(0,255,255,0.06);
+    margin-bottom:20px;
+    
+    }
+ .card:hover{
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
+.value{
+  font-family: 'Segoe UI', sans-serif;
+}
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  white-space: nowrap;   /* ❌ line break band */
+  flex-wrap: nowrap;     /* ❌ flex wrap band */
+  overflow: hidden;
+}
+   
+/* ================= HEADINGS ================= */
+h1{color:#00ffad;margin-top:0;}
+h2{color:#35d3ff;font-weight: 400;}
+
+/* ================= STATUS ================= */
+.status{
+    font-size:14px;
+    color:#00ffa6;
+    margin:10px 0;
+}
+
+.loader{
+    display:inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#35d3ff;
+    animation:pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse{
+    from{opacity:.3}
+    to{opacity:1}
+}
+
+/* ================= RIGHT PANEL ================= */
+
+.right-panel .card{
+    overflow-x:auto;
+    margin-top:6.6%;
+    width:100%
+}
+
+/* ================= TABLE ================= */
+#cryptoTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+#cryptoTable th,
+#cryptoTable td{
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.15);
+    text-align:left;
+}
+
+#cryptoTable th{color:#35d3ff}
+.up{color:#00ffad}
+.down{color:#ff4d4d}
+
+
+
+/* ================= BACK BUTTON ================= */
+.back-btn {
+    /* Matching your requested style */
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: white;  
+    background: rgba(255, 255, 255, 0.05); 
+    position: fixed; 
+      top: 20px; 
+      left: 20px; 
+      z-index: 10;  
+    
+    /* Layout and Spacing */
+    padding: 5px; 
+    align-items: center;
+    border-radius: 16px;
+    cursor: pointer; 
+    display: flex; 
+    font-size: 15px; 
+    transition: all 0.3s ease; 
+    backdrop-filter: blur(5px); /*Optional: gives a frosted glass look */
+    text-decoration: none; 
+  } 
+
+  .back-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(-4px); /*Subtle nudge to the left  */
+  } 
+/* ================= BUTTON - DAYS================= */
+button{
+    background:#00ffad;
+    color:#002b36;
+    border:none;
+    padding:8px 14px;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
+}
+button:hover{opacity:.85}      
+.filter-btn{
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 6px;
+}
+
+.filter-btn:hover{
+  background: rgba(255,255,255,0.15);
+}
+
+.filter-btn.active{
+  background: #00ffad;
+  color: #002b36;
+  border-color: #00ffad;
+  box-shadow: 0 0 10px rgba(0,255,173,0.6);
+}
+/* ========== MILESTONE NAV BUTTONS ========== */
+.nav-btn{
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 9px;
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+/* Hover effect */
+.nav-btn:hover{
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* LEFT - MIDDLE */
+.prev-btn{
+    left: 10px;
+}
+
+/* RIGHT - MIDDLE */
+.next-btn{
+    right: 10px;
+}
+
+
+  </style>
+</head>
+<body>
+  <a href="/" class="back-btn">
+    <p> ⬅️ HOME </p>
+  </a>
+
+  <!-- ========== MILESTONE NAVIGATION ========== -->
+<a href="/milestone1" class="nav-btn prev-btn">
+  ⬅️ 
+</a>
+
+<a href="/milestone3" class="nav-btn next-btn">
+   ➡️
+</a>
+
+  <!-- ================= MAIN LAYOUT ================= -->
+<div class="layout">
+
+<!-- ========== LEFT PANEL ========== -->
+  <div class="left-panel">
+    <h1 class="page-title">Milestone 2: Data Processing</h1>
+    <div class="card">
+      
+      <h2>Requirements</h2>
+      <ul>
+        <li>Daily returns calculation</li>
+        <li>Statistical measures computation</li>
+        <li>Moving average implementation</li>
+      </ul>
+      <h2>Outputs</h2>
+      <ul>
+        <li>Metrics table with risk indicators</li>
+        <li>Processed dataset for visualization </li>
+      </ul>
+    </div>
+  <!-- ✅ RESTORED CONTAINER (CHART) -->
+    <div class="card">
+        <h1>📈  Crypto Comparison</h1>
+       <div style="margin-bottom:12px">
+            <label><input type="checkbox" value="volatility" checked onchange="updateRiskChart()"> Volatility</label>
+            <label><input type="checkbox" value="sharpe" onchange="updateRiskChart()"> Sharpe</label>
+            <label><input type="checkbox" value="beta" onchange="updateRiskChart()"> Beta</label>
+            <label><input type="checkbox" value="var" onchange="updateRiskChart()"> VaR</label>
+          </div>
+
+        
+        <canvas id="RiskChart" height="160"></canvas>
+    </div>
+
+  </div>
+<!-- ========== RIGHT PANEL ========== -->
+  <div class="right-panel">
+    <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h1>📈 Risk Metrics Dashboard</h1>
+              <span style="color:#1dd1a1;">● Analysis</span>
+            </div>
+
+            <div class="Button">
+              <button class="filter-btn active" data-days="30">30D</button>
+              <button class="filter-btn" data-days="90">90D</button>
+              <button class="filter-btn" data-days="365">1Y</button>
+
+              <button onclick="loadData(currentDays)">Refresh</button>
+              
+
+
+            </div>
+          <p id="status" class="status">
+            <span class="loader"></span> Fetching latest data…
+          </p>
+          <p id="updatedTime" style="opacity:0.8"></p>
+          <table id="cryptoTable">
+          <thead>
+            <tr>
+              <th>Crypto</th>
+              <th>Volatility</th>
+              <th>Sharpe</th>
+              <th>Beta</th>
+              <th>VaR</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+
+const LOGOS = {
+  bitcoin:"https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=022",
+  ethereum:"https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
+  solana:"https://cryptologos.cc/logos/solana-sol-logo.svg?v=022",
+  cardano:"https://cryptologos.cc/logos/cardano-ada-logo.svg?v=022",
+  dogecoin:"https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=022",
+  ripple:"https://cryptologos.cc/logos/xrp-xrp-logo.svg?v=022",
+  litecoin:"https://cryptologos.cc/logos/litecoin-ltc-logo.svg?v=022",
+  polkadot:"https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=022",
+  tron:"https://cryptologos.cc/logos/tron-trx-logo.svg?v=022",
+  chainlink:"https://cryptologos.cc/logos/chainlink-link-logo.svg?v=022"
+}; 
+const SYMBOL_MAP = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  SOL: "solana",
+  ADA: "cardano",
+  DOGE: "dogecoin",
+  XRP: "ripple",
+  LTC: "litecoin",
+  DOT: "polkadot",
+  TRX: "tron",
+  LINK: "chainlink"
+};
+
+  
+let riskChart;
+
+
+/* Update table */
+function updateTable(rows){
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+
+  rows.forEach(r=>{
+    const logoKey = SYMBOL_MAP[r.coin];
+    tbody.innerHTML += `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img 
+              src="${LOGOS[logoKey] || ''}" 
+              style="width:22px;height:22px;"
+            >
+            <strong>${r.coin}</strong>
+          </div>
+        </td>
+
+        <td>${r.volatility}%</td>
+        <td>${r.sharpe}</td>
+        <td>${r.beta}</td>
+        <td>${r.var}%</td>
+      </tr>
+    `;
+  });
+}
+
+/* Update chart */
+function updateChart(metrics){
+  const ctx = document.getElementById("RiskChart");
+
+  if(riskChart) riskChart.destroy();
+
+  const datasets = [];
+
+  if(document.querySelector("input[value='volatility']").checked){
+    datasets.push({
+      label:"Volatility",
+      data: metrics.volatility,
+      backgroundColor:"#ff6b6b"
+    });
+  }
+
+  if(document.querySelector("input[value='sharpe']").checked){
+    datasets.push({
+      label:"Sharpe",
+      data: metrics.sharpe,
+      backgroundColor:"#1dd1a1"
+    });
+  }
+
+  if(document.querySelector("input[value='beta']").checked){
+    datasets.push({
+      label:"Beta",
+      data: metrics.beta,
+      backgroundColor:"#54a0ff"
+    });
+  }
+
+  if(document.querySelector("input[value='var']").checked){
+    datasets.push({
+      label:"VaR",
+      data: metrics.var,
+      backgroundColor:"#feca57"
+    });
+  }
+
+  riskChart = new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels: metrics.labels,
+      datasets: datasets
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{labels:{color:"white"}}},
+      scales:{
+        x:{ticks:{color:"white"}},
+        y:{ticks:{color:"white"}}
+      }
+    }
+  });
+}
+
+/* Checkbox change */
+function updateRiskChart(){
+  loadData(currentDays);
+}
+
+let currentDays = 30;
+
+
+/* ================================
+   LOAD DATA
+================================ */
+
+/* Load data from Flask */
+async function loadData(days){
+  const status = document.getElementById("status");
+  const updatedTime = document.getElementById("updatedTime");
+
+  status.innerHTML = "<span class='loader'></span> Fetching latest data…";
+
+  const res = await fetch(`/api/risk-metrics?days=${days}`);
+  const data = await res.json();
+
+  updateTable(data.table);
+  updateChart(data.metrics);
+
+
+  
+  // ✅ STOP LOADER
+  status.innerHTML = "✔ Data updated successfully";
+  updatedTime.innerHTML = "Last Updated: " + new Date().toLocaleString();
+
+}
+
+
+/* ================================
+   BUTTON HANDLERS
+================================ */
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    // Remove active from all
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+
+    // Add active to clicked
+    btn.classList.add("active");
+
+    // Get days
+    currentDays = parseInt(btn.dataset.days);
+
+    // Load data
+    loadData(currentDays);
+  });
+});
+
+/* ================================
+   INIT
+================================ */
+loadData(currentDays);
+
+
+// NOTE: removed unused dash link update (no element with id="openDash")
+</script>
+
+
+
+  
+  
+</body>
+</html>
+

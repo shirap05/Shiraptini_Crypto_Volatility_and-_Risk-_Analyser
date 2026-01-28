@@ -1,0 +1,380 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CVARA | Login</title>
+
+<style>
+    *{
+        box-sizing:border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body{
+        margin:0;
+        height:100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+    }
+
+    .auth-card{
+        width:360px;
+        padding:30px;
+        background: rgba(255,255,255,0.12);
+        border-radius:18px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        text-align:center;
+    }
+
+    .auth-card h1{
+        margin-bottom:5px;
+        font-size:28px;
+        letter-spacing:1px;
+    }
+
+    .auth-card p{
+        font-size:13px;
+        opacity:0.8;
+        margin-bottom:25px;
+    }
+
+    input{
+        width:100%;
+        padding:12px;
+        margin:10px 0;
+        border:none;
+        outline:none;
+        border-radius:10px;
+        background: rgba(255,255,255,0.2);
+        color:white;
+        font-size:14px;
+    }
+
+    input::placeholder{
+        color:#ddd;
+    }
+
+    .btn-group{
+        display:flex;
+        gap:10px;
+        margin-top:15px;
+    }
+
+    button{
+        flex:1;
+        padding:12px;
+        border:none;
+        border-radius:12px;
+        font-weight:600;
+        cursor:pointer;
+        transition:0.3s;
+    }
+
+    .login{
+        background:#00c6ff;
+        color:#000;
+    }
+
+    .register{
+        background:#f7971e;
+        color:#000;
+    }
+
+    button:hover{
+        transform:translateY(-2px);
+        box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .note{
+        margin-top:15px;
+        font-size:12px;
+        opacity:0.7;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="auth-card">
+    <h1>CVARA</h1>
+    <p>Crypto Volatility & Risk Analyzer</p>
+
+    <form method="POST">
+        Username only used for REGISTER -->
+        <!-- <input type="text" name="username" placeholder="Username (for register)">
+
+        <input type="email" name="email" placeholder="Email" required>
+
+        <input type="password" name="password" placeholder="Password" required>
+
+        <div class="btn-group">
+            <button class="login" name="action" value="login">Login</button>
+            <button class="register" name="action" value="register">Register</button>
+        </div>
+    </form>
+
+    <div class="note">
+        Single page handles both Login & Register
+    </div>
+</div>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Register</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+:root{
+  --bg-1:#040b2c;
+  --bg-2:#071a47;
+  --bg-3:#001d3d;
+  --accent:#00ffad;
+  --accent-2:#35d3ff;
+  --text:#e9f2ff;
+  --muted:#9bb7d6;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--bg-1),var(--bg-2),var(--bg-3));
+  color:var(--text);
+  overflow:hidden;
+}
+
+/* subtle glow orbs */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  filter:blur(40px);
+  opacity:0.45;
+  z-index:0;
+}
+body::before{
+  top:-80px;
+  left:-80px;
+  background:radial-gradient(circle, rgba(53,211,255,0.7), rgba(53,211,255,0));
+}
+body::after{
+  bottom:-120px;
+  right:-80px;
+  background:radial-gradient(circle, rgba(0,255,173,0.6), rgba(0,255,173,0));
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1;
+}
+
+.container{
+  width:380px;
+  padding:28px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 20px rgba(0,255,255,0.08);
+}
+
+.brand{
+  text-align:center;
+  margin-bottom:18px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:28px;
+  letter-spacing:1px;
+  color:var(--accent);
+}
+
+.brand p{
+  margin:6px 0 0;
+  font-size:13px;
+  color:var(--muted);
+}
+
+h2{
+  text-align:center;
+  margin:18px 0 14px;
+  color:var(--accent-2);
+  font-weight:500;
+}
+
+.input-group{
+  margin-bottom:12px;
+}
+
+.input-group input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  background:rgba(255,255,255,0.08);
+  color:var(--text);
+  font-size:14px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+.input-group input::placeholder{
+  color:rgba(255,255,255,0.6);
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  font-weight:700;
+  color:#002b36;
+  cursor:pointer;
+  margin-top:6px;
+  box-shadow:0 6px 16px rgba(0,255,173,0.25);
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(53,211,255,0.35);
+}
+
+.toggle{
+  text-align:center;
+  margin-top:16px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.toggle a{
+  color:var(--accent-2);
+  cursor:pointer;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.form{
+  display:none;
+}
+.form.active{
+  display:block;
+}
+
+@media (max-width:480px){
+  .container{
+    width:90%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+  <div class="container">
+    <div class="brand">
+      <h1>CVARA</h1>
+      <p>Crypto Volatility & Risk Analyzer</p>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form active" id="loginForm">
+      <h2>Login</h2>
+      {% if error %}
+        <div style="color:red; text-align:center; margin-bottom:10px;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+      <form method="POST" action="/auth">
+        <div class="input-group">
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <div class="toggle">
+        New user? <a onclick="showRegister()">Register</a>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="form" id="registerForm">
+      <h2>Register</h2>
+      {% if error %}
+        <div style="color:red; text-align:center; margin-bottom:10px;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+      <form method="POST" action="/register">
+        <div class="input-group">
+          <input type="text" name="username" placeholder="Username" required>
+        </div>
+
+        <div class="input-group">
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <div class="toggle">
+        Already have an account? <a onclick="showLogin()">Login</a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showRegister(){
+  document.getElementById("loginForm").classList.remove("active");
+  document.getElementById("registerForm").classList.add("active");
+}
+
+function showLogin(){
+  document.getElementById("registerForm").classList.remove("active");
+  document.getElementById("loginForm").classList.add("active");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Milestone 1 : Data Acquisition</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ================= BASE ================= */
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(135deg,#040b2c,#071a47,#001d3d);
+    color:white;
+    padding:25px;
+}
+
+/* ================= NAVBAR ================= */
+/* nav{
+    background:#151921;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    border-bottom:1px solid #2d333f;
+    border-radius:60px;
+    padding:10px 25px;
+    margin-bottom:25px;
+}
+
+.nav-logo{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+} */
+
+/* ================= LAYOUT ================= */
+.layout{
+    max-width:1400px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:30px;
+    align-items:start;
+}
+
+/* ================= CARDS ================= */
+.card{
+    background:rgba(255,255,255,0.07);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 20px rgba(0,255,255,0.06);
+    margin-bottom:20px;
+    
+}
+.card:hover{
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
+.value{
+  font-family: 'Segoe UI', sans-serif;
+}
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  white-space: nowrap;   /* ❌ line break band */
+  flex-wrap: nowrap;     /* ❌ flex wrap band */
+  overflow: hidden;
+}
+
+/* ================= HEADINGS ================= */
+h1{color:#00ffad;margin-top:0;}
+h2{color:#35d3ff;font-weight: 400;}
+
+/* ================= STATUS ================= */
+.status{
+    font-size:14px;
+    color:#00ffa6;
+    margin:10px 0;
+}
+
+.loader{
+    display:inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#35d3ff;
+    animation:pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse{
+    from{opacity:.3}
+    to{opacity:1}
+}
+
+/* ================= RIGHT PANEL ================= */
+
+.right-panel .card{
+    overflow-x:auto;
+    margin-top:6.6%;
+    width:100%
+}
+
+/* ================= TABLE ================= */
+#cryptoTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+#cryptoTable th,
+#cryptoTable td{
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.15);
+    text-align:left;
+}
+
+#cryptoTable th{color:#35d3ff}
+.up{color:#00ffad}
+.down{color:#ff4d4d}
+
+/* ================= BUTTON ================= */
+button{
+    background:#00ffad;
+    color:#002b36;
+    border:none;
+    padding:8px 14px;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
+}
+button:hover{opacity:.85}
+
+.back-btn {
+  /* Matching your requested style */
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;  
+  background: rgba(255, 255, 255, 0.05); 
+  position: fixed; 
+     top: 20px; 
+     left: 20px; 
+     z-index: 10;  
+  
+  /* Layout and Spacing */
+   padding: 5px; 
+   align-items: center;
+   border-radius: 16px;
+   cursor: pointer; 
+   display: flex; 
+   font-size: 15px; 
+   transition: all 0.3s ease; 
+   backdrop-filter: blur(5px); /*Optional: gives a frosted glass look */
+   text-decoration: none; 
+} 
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+   transform: translateX(-4px); /*Subtle nudge to the left  */
+} 
+
+/* ========== MILESTONE NAV BUTTONS ========== */
+.nav-btn{
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 9px;
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.nav-btn:hover{
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* LEFT - MIDDLE */
+.prev-btn{
+    left: 20px;
+}
+
+/* RIGHT - MIDDLE */
+.next-btn{
+    right: 10px;
+}
+.coin-selector{
+  display:flex;
+  gap:22px;
+}
+
+.coin-item{
+  display:flex;
+  flex-direction:column;   /* 🔥 KEY LINE */
+  align-items:center;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.coin-item input{
+  margin-bottom:6px;       /* space between checkbox & text */
+}
+
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back-btn">
+    <p> ⬅️ HOME </p>
+</a>
+<!-- ========== MILESTONE NAVIGATION ========== -->
+<a href="/" class="nav-btn prev-btn">
+    ⬅️   
+</a>
+
+<a href="/milestone2" class="nav-btn next-btn">
+     ➡️
+</a>
+<!-- ================= NAV ================= -->
+<!-- <nav>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="nav-logo">
+    <div style="font-size:34px;font-weight:bold;color:#ebecf3">CVARA</div>
+</nav> -->
+
+<!-- ================= MAIN LAYOUT ================= -->
+<div class="layout">
+
+<!-- ========== LEFT PANEL ========== -->
+<div class="left-panel">
+    <h1 class="page-title">Milestone 1: Data Acquisition</h1>
+
+    <div class="card">
+        <h2>Requirements</h2>
+        <ul>
+            <li>Environment Setup (Flask & Python libraries)</li>
+            <li>API Integration (CoinGecko)</li>
+            <li>Data Storage (SqLite Database)</li>
+            <li>Preprocessing missing values</li>
+        </ul>
+
+        <h2>Outputs</h2>
+        <ul>
+            <li>Daily price data for 5+ cryptocurrencies</li>
+            <li>Verified API connectivity & data consistency</li>
+            
+        </ul>
+
+        
+    </div>
+
+    <!-- ✅ RESTORED CONTAINER (CHART) -->
+    <div class="card">
+        <h1>📡  7-Day Price Trend</h1>
+       <div class="coin-selector">
+            <label class="coin-item"><input type="checkbox" value="bitcoin" checked> Bitcoin</label>
+            <label class="coin-item"><input type="checkbox" value="ethereum" checked> Ethereum</label>
+            <label class="coin-item"><input type="checkbox" value="solana" checked> Solana</label>
+            <label class="coin-item"><input type="checkbox" value="cardano" checked> Cardano</label>
+            <label class="coin-item"><input type="checkbox" value="dogecoin" checked> Dogecoin</label>
+        </div>
+
+
+        
+        <canvas id="assetChart" height="160"></canvas>
+    </div>
+</div>
+
+<!-- ========== RIGHT PANEL ========== -->
+<div class="right-panel">
+    <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h1>📡 Live Crypto Market Feed</h1>
+            <button onclick="loadCrypto()">Refresh</button>
+        </div>
+
+        <p id="status" class="status">
+            <span class="loader"></span> Fetching latest data…
+        </p>
+        <p id="updatedTime" style="opacity:0.8"></p>
+
+        <table id="cryptoTable">
+            <thead>
+                <tr>
+                    <th>Cryptocurrency</th>
+                    <th>Price (USD)</th>
+                    <th>24h Change</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coin in crypto_data %}
+                <tr>
+                    <td>{{ coin.name }}</td>
+                    <td>${{ "{:,.2f}".format(coin.current_price) }}</td>
+                    <td class="{{ 'up' if coin.price_change_percentage_24h > 0 else 'down' }}">
+                        {{ coin.price_change_percentage_24h | round(2) }}%
+                    </td>
+                    <td>${{ "{:,.0f}".format(coin.total_volume) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+</div>
+
+<script>
+
+const LOGOS = {
+  bitcoin:"https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=022",
+  ethereum:"https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
+  solana:"https://cryptologos.cc/logos/solana-sol-logo.svg?v=022",
+  cardano:"https://cryptologos.cc/logos/cardano-ada-logo.svg?v=022",
+  dogecoin:"https://cryptologos.cc/logos/dogecoin-doge-logo.svg?v=022",
+  ripple:"https://cryptologos.cc/logos/xrp-xrp-logo.svg?v=022",
+  litecoin:"https://cryptologos.cc/logos/litecoin-ltc-logo.svg?v=022",
+  polkadot:"https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=022",
+  tron:"https://cryptologos.cc/logos/tron-trx-logo.svg?v=022",
+  chainlink:"https://cryptologos.cc/logos/chainlink-link-logo.svg?v=022"
+};
+let assetChart;
+
+/* ================================
+   LIVE TABLE
+================================ */
+function loadCrypto(){
+    document.getElementById("status").innerHTML =
+        "<span class='loader'></span> Fetching latest data…";
+
+    fetch("/api/crypto")
+    .then(res => res.json())
+    .then(data => {
+
+        let rows = "";
+
+        data.forEach(c => {
+            let color = c.price_change_percentage_24h >= 0 ? "#00ffad" : "#ff4d4d";
+
+            rows += `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img 
+                                src="${LOGOS[c.id] || ''}" 
+                                width="26" 
+                                height="26"
+                                style="border-radius:50%"
+                            >
+                            <strong>${c.name} (${c.symbol.toUpperCase()})</strong>
+                        </div>
+                    </td>
+                    <td>$${Number(c.current_price).toLocaleString()}</td>
+                    <td style="color:${color}">
+                        ${c.price_change_percentage_24h.toFixed(2)}%
+                    </td>
+                    <td>$${Number(c.total_volume).toLocaleString()}</td>
+                </tr>`;
+        });
+
+        document.querySelector("#cryptoTable tbody").innerHTML = rows;
+        document.getElementById("status").innerHTML = "✔ Updated successfully";
+        document.getElementById("updatedTime").innerHTML =
+            "Last Updated: " + new Date().toLocaleString();
+
+        load7DayTrend();
+    });
+}
+
+/* ================================
+   7-DAY MULTI-COIN TREND
+================================ */
+function load7DayTrend(){
+
+    const selectedCoins = Array.from(
+        document.querySelectorAll('input[type="checkbox"]:checked')
+    ).map(cb => cb.value);
+
+    if(selectedCoins.length === 0) return;
+
+    fetch(`/api/history?coins=${selectedCoins.join(",")}`)
+    .then(res => res.json())
+    .then(data => {
+
+        const datasets = [];
+        const colors = {
+            bitcoin:"#00ffad",
+            ethereum:"#ff6384",
+            solana:"#f39c12",
+            cardano:"#f1c40f",
+            dogecoin:"#1abc9c"
+        };
+
+        selectedCoins.forEach(coin => {
+            datasets.push({
+                label: coin.toUpperCase(),
+                data: data.prices[coin],
+                borderColor: colors[coin] || "#fff",
+                tension:0.4,
+                pointRadius:3,
+                fill:false
+            });
+        });
+
+        if(assetChart){
+            assetChart.data.labels = data.dates;
+            assetChart.data.datasets = datasets;
+            assetChart.update();
+            return;
+        }
+
+        assetChart = new Chart(document.getElementById("assetChart"), {
+            type: "line",
+            data: {
+                labels: data.dates,
+                datasets: datasets
+            },
+            options:{
+                plugins:{legend:{labels:{color:"#fff"}}},
+                scales:{
+                    x:{ticks:{color:"#fff"}},
+                    y:{ticks:{color:"#fff"}}
+                }
+            }
+        });
+    });
+}
+
+/* ================================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    loadCrypto();
+
+    document
+      .querySelectorAll('input[type="checkbox"]')
+      .forEach(cb => cb.addEventListener("change", load7DayTrend));
+});
+</script>
+
+
+
+</body>
+</html>

@@ -1,1 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISP</title>
+    <style>
+        /* BASIC STYLING */
+         body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0e14;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            /* This creates a 50% black overlay over the image */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/bg.png');
+            
+            /* Standard background settings */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            
+            /* Make sure your text is white so it pops! */
+            color: white;
+            font-family: sans-serif;
+            
+                
+         }
+        nav {
+            background-color: #151921;
+            
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #2d333f;
+        }
+        .header-area { 
+            text-align: center;
+            font-size: 27px;
+            margin-bottom: 150px; }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+        .milestone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .card {
+            background: #1c212b;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #2d333f;
+            cursor: pointer;
+            transition:all 0.3s ease;
+            display: flex  ;
+            flex-direction: column;
+            
+        }
 
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #06e760;
+            box-shadow: 0 10px 20px rgba(6,231,96,0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #5d5fef;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn:hover { text-decoration: underline; }
+         
+        .nav-logo { 
+            width: 100px;   /* Sets a specific width */
+            height: 80px;
+            border-radius: 60px;
+            margin: -20px,5px;
+            padding: 15px;
+            
+        }
+        
+        .size{
+            font-size: 18px;
+            color:#f6f8f8
+        }
+      .space{
+        margin-top: -10px;
+      }
+      .back-btn {
+  /* Matching your requested style */
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;  
+  background: rgba(255, 255, 255, 0.05); 
+  position: fixed; 
+     top: 30px; 
+     right: 20px; 
+     z-index: 10;  
+  
+  /* Layout and Spacing */
+   padding: 5px; 
+   align-items: center;
+   border-radius: 16px;
+   cursor: pointer; 
+   display: flex; 
+   font-size: 15px; 
+   transition: all 0.3s ease; 
+   backdrop-filter: blur(5px); /*Optional: gives a frosted glass look */
+   text-decoration: none; 
+} 
+
+        .back-btn:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.3);
+           transform: translateX(-4px); /*Subtle nudge to the left  */
+        } 
+        .welcome-banner{
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 18px;
+            border-radius: 16px;
+            background: rgba(6,231,96,0.18);
+            border: 1px solid rgba(6,231,96,0.5);
+            color: #eafff5;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 10px 20px rgba(6,231,96,0.15);
+            z-index: 20;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .welcome-banner.hide{
+            opacity: 0;
+            transform: translateX(-50%) translateY(-6px);
+            pointer-events: none;
+        }
+
+    </style>    
+</head>
+<body>
+    
+
+    
+    <nav>
+        
+        <img src="{{ url_for('static', filename='logo.png') }}" class="nav-logo" >
+        
+        <div style="font-weight: bold; font-size: 80px; color: #ebecf3;" >CVARA</div>
+        <!-- <div style="font-size: 14px;">System Status: <span style="color: #00ff88;">● Online</span></div> -->
+    </nav>
+    {% if username %}
+    <div id="welcomeBanner" class="welcome-banner">Welcome {{ username }}</div>
+    {% endif %}
+    <a href="/logout" class="back-btn">Logout</a>
+    <div id="home-page" class="container">
+        <div class="header-area">
+            <h1>Crypto Volatility And Risk Analyzer</h1>
+            <p>"Select a milestone to view our real-time  data architecture"  👇 </p>
+        </div>
+         <div class="milestone-grid">
+            <div class="card" >
+                <div class="size">
+                <div class="badge" style="color:#06e760">MILESTONE 01</div>
+                <h3>Data Acquisition</h3></div>
+                <p>Dynamic Data Fetching:</p>
+                <p class="space"> 
+                   Automatically fetch live and historical cryptocurrency data using APIs 
+                   (Binance or CoinGecko). 
+                </p>
+                
+                <a style="color: #5d5fef; margin-top: 15px; font-size: 12px;" class="btn" href="/milestone1" >VIEW MODULE →</a>
+            </div>
+
+            <div class="card">
+                <div class="size">
+                <div class="badge" style="color:#06e760">MILESTONE 02</div>
+                <h3>Volatility Calculation</h3></div>
+                <p>Risk Analysis Metrics:  </p>                     
+                <p class="space">Compute financial indicators including daily and annualized volatility, Sharpe ratio, and 
+                   beta coefficients. </p>
+                <a style="color: #5d5fef; margin-top: 15px; font-size: 12px;" class="btn" href="/milestone2" >VIEW MODULE →</a>   
+            </div>
+
+            <div class="card">
+                <div class="size">
+                <div class="badge" style="color:#06e760">MILESTONE 03</div>
+                <h3>Risk Simulation</h3></div>
+                <p>Interactive Visualizations: </p>
+                <p class="space">Build real-time visual dashboards using Plotly or Matplotlib to depict price trends and 
+                                 volatility movement. </p>
+                <a style="color: #5d5fef; margin-top: 15px; font-size: 12px;" class="btn" href="/milestone3" >VIEW MODULE →</a>
+            </div>
+
+            <div class="card">
+                <div class="size">
+                <div class="badge" style="color:#06e760">MILESTONE 04</div>
+                <h3>Dashboard Live</h3></div>
+                <p>Risk Categorization: </p>
+                <p class="space">
+                    Classify cryptocurrencies into High-Risk, Medium-Risk, and Low-Risk groups based on 
+                    computed metrics. </p>
+                <a style="color: #5d5fef; margin-top: 15px; font-size: 12px;" class="btn" href="/milestone4" >VIEW MODULE →</a>
+            </div>
+    </div>
+
+    <script>
+      const banner = document.getElementById("welcomeBanner");
+      if (banner) {
+        setTimeout(() => {
+          banner.classList.add("hide");
+        }, 5000);
+      }
+    </script>
+</body>
+
+</html>
