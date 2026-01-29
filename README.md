@@ -52,3 +52,30 @@ This project integrates multiple milestones into a single web application with i
 | Data Analysis | Pandas, NumPy |
 | API | CoinGecko |
 | Reporting | ReportLab |
+
+---
+
+## 📁 Project Structure
+
+FINAL_PROJECT/
+│
+├── app.py # Main Flask application
+├── db.py # Database schema & connection
+├── mil3_dash.py # Dash app (Milestone 3)
+├── mil4_dash.py # Dash app (Milestone 4)
+├── requirements.txt # Project dependencies
+├── README.md # Documentation
+│
+├── database/
+│ └── cvara.db # SQLite database (auto-generated)
+│
+├── templates/
+│ ├── auth.html
+│ ├── Base.html
+│ ├── milestone1.html
+│ ├── milestone2.html
+│ ├── milestone3.html
+│ └── milestone4.html
+│
+└── static/
+└── css / assets
