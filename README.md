@@ -75,7 +75,10 @@ FINAL_PROJECT/
 │ ├── milestone1.html
 │ ├── milestone2.html
 │ ├── milestone3.html
+
 │ └── milestone4.html
 │
 └── static/
 └── css / assets
+Dashboard ---
+<img width="1911" height="915" alt="Screenshot 2026-01-29 193548" src="https://github.com/user-attachments/assets/23cb0651-8faf-47ad-b651-2ec892d6d377" />
